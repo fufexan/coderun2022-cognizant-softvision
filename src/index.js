@@ -12,11 +12,24 @@ app.use(cors());
 app.get('/headlines', headlineCachingMiddleware, (req, res, next) => {
   const fetchData = require('./dataSource/fetchHeadlines');
   fetchData(req.query).then(result => {
-    res.send(result)
+    if(result.total_hits > 0) {
+      res.send(result)
+    } else {
+      res.status(404).send(result.status);
+    }
   }).catch(error => {
-    next(error);
+    res.send(error);
   })
 });
+
+app.get('/search/:searchText', (req, res) => {
+  const searchNews = require('./dataSource/searchNews');
+  searchNews(req.params).then(result => {
+    res.send(result);
+  }).catch(error => {
+    res.status(404).send(error);
+  })
+})
 
 app.use(notFoundMiddleware);
 app.use(errorHandlingMiddleware);

@@ -1,7 +1,8 @@
 const axios = require('axios');
+require('dotenv').config()
 const { getHeadlineCache } = require('../cache/headlineCache');
 
-const apiKey = '';
+const apiKey = process.env.API_KEY;
 const fetchHeadlines = ({ country }) => {
   const options = {
     baseURL: 'https://api.newscatcherapi.com',

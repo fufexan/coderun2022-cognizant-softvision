@@ -1,6 +1,7 @@
 const axios = require('axios');
+require('dotenv').config()
 
-const apiKey  = '';
+const apiKey = process.env.API_KEY;
 const searchNews = ({ searchText, country = 'ro' }) => {
   const options = {
     baseURL: 'https://api.newscatcherapi.com',
