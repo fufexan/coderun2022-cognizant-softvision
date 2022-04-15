@@ -4,6 +4,7 @@ const { initHeadlineCache } = require('./cache/headlineCache');
 const headlineCachingMiddleware = require('./middlewares/headlineCachingMiddleware');
 const errorHandlingMiddleware = require('./middlewares/errorHandlingMiddleware');
 const notFoundMiddleware = require('./middlewares/notFoundMiddleware');
+const logger = require('./middlewares/logger');
 
 const app = express();
 
@@ -14,7 +15,9 @@ app.get('/headlines', headlineCachingMiddleware, (req, res) => {
   fetchData(req.query).then(result => {
     if (result.total_hits > 0) {
       res.send(result)
+      logger('Headlines', result.status);
     } else {
+      logger('Headlines', result.status);
       res.status(404).send(result.status);
     }
   }).catch(error => {
@@ -27,7 +30,9 @@ app.get('/search/:searchText', (req, res) => {
   // search news worldwide
   searchNews({ q: req.params.searchText, country: '' }).then(result => {
     res.send(result);
+    logger('Search', result.user_input.q);
   }).catch(error => {
+    logger('Search', error);
     res.status(404).send(error);
   })
 })
