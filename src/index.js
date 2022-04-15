@@ -9,10 +9,10 @@ const app = express();
 
 app.use(cors());
 
-app.get('/headlines', headlineCachingMiddleware, (req, res, next) => {
+app.get('/headlines', headlineCachingMiddleware, (req, res) => {
   const fetchData = require('./dataSource/fetchHeadlines');
   fetchData(req.query).then(result => {
-    if(result.total_hits > 0) {
+    if (result.total_hits > 0) {
       res.send(result)
     } else {
       res.status(404).send(result.status);
@@ -24,7 +24,8 @@ app.get('/headlines', headlineCachingMiddleware, (req, res, next) => {
 
 app.get('/search/:searchText', (req, res) => {
   const searchNews = require('./dataSource/searchNews');
-  searchNews(req.params).then(result => {
+  // search news worldwide
+  searchNews({ q: req.params.searchText, country: '' }).then(result => {
     res.send(result);
   }).catch(error => {
     res.status(404).send(error);
